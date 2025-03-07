@@ -60,7 +60,7 @@ app.post('/api/download', async (req, res) => {
     
     const response = await axios.post(apiUrl, body, { 
       headers,
-      timeout: 15000 
+      timeout: 30000 // Increased timeout to 30 seconds
     });
 
     return res.json(response.data);

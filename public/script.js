@@ -337,8 +337,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
         } catch (error) {
             console.error('Error:', error);
-            showError('Failed to process your request. Please try again later.');
-            showNotification('Failed to process your request. Please try again later.', 'error');
+            const errorMsg = error.message && error.message.includes('timeout') 
+                ? 'Request timed out. The service might be busy. Please try again later.' 
+                : 'Failed to process your request. Please try again later.';
+            showError(errorMsg);
+            showNotification(errorMsg, 'error');
         }
     });
     
