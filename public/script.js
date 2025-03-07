@@ -1,5 +1,3 @@
-
-// Initialize particles.js
 document.addEventListener('DOMContentLoaded', function() {
     particlesJS('particles-js', {
         "particles": {
@@ -107,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function() {
         "retina_detect": true
     });
 
-    // Animate on scroll
     const animatedElements = document.querySelectorAll('[data-aos]');
     
     const checkIfInView = () => {
@@ -126,7 +123,6 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('scroll', checkIfInView);
     checkIfInView();
 
-    // Navigation active state
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('nav ul li a');
     
@@ -150,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Video Download Functionality
     const videoUrlInput = document.getElementById('videoUrl');
     const downloadBtn = document.getElementById('downloadBtn');
     const resultContainer = document.getElementById('result');
@@ -168,7 +163,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Show loading animation
         resultContainer.classList.remove('hidden');
         loadingAnimation.classList.remove('hidden');
         downloadResults.classList.add('hidden');
@@ -185,7 +179,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const data = await response.json();
             
-            // Hide loading animation
             loadingAnimation.classList.add('hidden');
             
             if (data.error || !data.medias || data.medias.length === 0) {
@@ -193,7 +186,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Show download options
             downloadResults.classList.remove('hidden');
             downloadOptions.innerHTML = '';
             
