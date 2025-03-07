@@ -4,14 +4,12 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Enhanced middleware setup
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(express.static('public', {
-  maxAge: '1h' // Add cache control for static assets
+  maxAge: '1h' 
 }));
 
-// Add compression for better performance
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -36,7 +34,6 @@ app.post('/api/download', async (req, res) => {
       return res.status(400).json({ error: 'URL is required' });
     }
 
-    // Validate URL format
     try {
       new URL(url);
     } catch (err) {
@@ -61,31 +58,28 @@ app.post('/api/download', async (req, res) => {
 
     const body = `url=${encodeURIComponent(url)}`;
     
-    // Set timeout and add error handling
     const response = await axios.post(apiUrl, body, { 
       headers,
-      timeout: 15000 // 15 second timeout
+      timeout: 15000 
     });
 
     return res.json(response.data);
   } catch (error) {
     console.error('Error:', error.message);
     
-    // Provide more specific error messages based on the error
     if (error.code === 'ECONNABORTED') {
       return res.status(504).json({ error: 'Request timed out. The server might be experiencing high traffic.' });
     } else if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
+   
       return res.status(error.response.status).json({ 
         error: 'Failed to download video', 
         details: `Service responded with status code: ${error.response.status}` 
       });
     } else if (error.request) {
-      // The request was made but no response was received
+    
       return res.status(503).json({ error: 'No response from download service. Please try again later.' });
     } else {
-      // Something happened in setting up the request that triggered an Error
+    
       return res.status(500).json({ error: 'Failed to download video', details: error.message });
     }
   }

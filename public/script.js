@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Optimize particles settings for better performance
+    
     particlesJS('particles-js', {
         "particles": {
             "number": {
-                "value": 40, // Reduced particle count
+                "value": 40, 
                 "density": {
                     "enable": true,
                     "value_area": 1000
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 "random": true,
                 "anim": {
                     "enable": true,
-                    "speed": 0.5, // Reduced animation speed
+                    "speed": 0.5, 
                     "opacity_min": 0.1,
                     "sync": false
                 }
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 "random": true,
                 "anim": {
                     "enable": true,
-                    "speed": 1, // Reduced animation speed
+                    "speed": 1, 
                     "size_min": 0.1,
                     "sync": false
                 }
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             "move": {
                 "enable": true,
-                "speed": 0.5, // Reduced move speed
+                "speed": 0.5, 
                 "direction": "none",
                 "random": true,
                 "straight": false,
@@ -96,25 +96,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     "duration": 0.4
                 },
                 "push": {
-                    "particles_nb": 2 // Reduced particles generated on click
+                    "particles_nb": 2 
                 },
                 "remove": {
                     "particles_nb": 2
                 }
             }
         },
-        "retina_detect": false // Disable retina detection for performance
+        "retina_detect": false 
     });
 
-    // Create notifications container
     const notificationsContainer = document.createElement('div');
     notificationsContainer.className = 'notifications-container';
     document.body.appendChild(notificationsContainer);
 
-    // Optimize scroll animations with throttle
     const animatedElements = document.querySelectorAll('[data-aos]');
     
-    // Throttle function to improve scroll performance
     const throttle = (callback, delay) => {
         let lastCall = 0;
         return function(...args) {
@@ -138,12 +135,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 element.classList.remove('aos-animate');
             }
         });
-    }, 100); // Throttle to run at most every 100ms
+    }, 100); 
     
     window.addEventListener('scroll', checkIfInView);
     checkIfInView();
 
-    // Optimize section detection for navigation
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('nav ul li a');
     
@@ -165,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 link.classList.add('active');
             }
         });
-    }, 100)); // Throttle to run at most every 100ms
+    }, 100)); 
 
     const videoUrlInput = document.getElementById('videoUrl');
     const downloadBtn = document.getElementById('downloadBtn');
@@ -176,7 +172,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const errorMessage = document.querySelector('.error-message');
     const errorText = document.getElementById('errorText');
 
-    // Show notification popup
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
@@ -204,7 +199,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         notificationsContainer.appendChild(notification);
         
-        // Auto-remove notification after 5 seconds
         setTimeout(() => {
             notification.classList.add('fade-out');
             setTimeout(() => {
@@ -213,14 +207,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
 
-    // Auto download function - downloads directly without redirecting
     function autoDownload(url) {
         showNotification('Starting download...', 'info');
         
-        // Use fetch to get the file and download it directly
         fetch(url)
             .then(response => {
-                // Get filename from content-disposition header or use a default
                 let filename = 'video';
                 const disposition = response.headers.get('content-disposition');
                 if (disposition && disposition.includes('filename=')) {
@@ -229,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         filename = filenameMatch[1];
                     }
                 } else {
-                    // Try to extract filename from URL
+                 
                     const urlParts = url.split('/');
                     if (urlParts.length > 0) {
                         const possibleFilename = urlParts[urlParts.length - 1].split('?')[0];
@@ -242,22 +233,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 return response.blob().then(blob => {
-                    // Create object URL for the blob
+                 
                     const blobUrl = URL.createObjectURL(blob);
                     
-                    // Create download link and trigger it
                     const link = document.createElement('a');
                     link.href = blobUrl;
                     link.download = filename;
                     
-                    // Append to body, click, and clean up
                     document.body.appendChild(link);
                     link.click();
                     
-                    // Clean up
                     setTimeout(() => {
                         document.body.removeChild(link);
-                        URL.revokeObjectURL(blobUrl); // Free up memory
+                        URL.revokeObjectURL(blobUrl); 
                     }, 100);
                     
                     showNotification('Download started!', 'success');
@@ -267,7 +255,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Download error:', error);
                 showNotification('Download failed. Trying alternate method...', 'error');
                 
-                // Fallback method - create a hidden iframe
                 const iframe = document.createElement('iframe');
                 iframe.style.display = 'none';
                 iframe.src = url;
@@ -320,14 +307,12 @@ document.addEventListener('DOMContentLoaded', function() {
             downloadResults.classList.remove('hidden');
             downloadOptions.innerHTML = '';
             
-            // Create background overlay for pop-up effect
             document.body.classList.add('results-active');
             
-            // Display all download options
             data.medias.forEach((media, index) => {
                 const option = document.createElement('div');
                 option.className = 'download-option';
-                option.style.setProperty('--i', index); // Set animation delay based on index
+                option.style.setProperty('--i', index); 
                 
                 const quality = media.quality || 'Unknown quality';
                 const format = media.format || 'Unknown format';
@@ -340,7 +325,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p><strong>Size:</strong> ${size}</p>
                 `;
                 
-                // Add click event to each download option to auto-download
                 option.addEventListener('click', function() {
                     autoDownload(media.url);
                     showNotification(`Downloading ${quality} ${format} file...`, 'success');
