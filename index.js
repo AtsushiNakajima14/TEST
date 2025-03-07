@@ -4,11 +4,10 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Rate limiting and cooldown tracking
 const requestTracker = {
   ipRequests: {},
   globalLastRequest: 0,
-  GLOBAL_COOLDOWN: 3000, // 3 seconds cooldown between any requests
+  GLOBAL_COOLDOWN: 3000, 
   getIpCooldown: function(ip) {
     if (!this.ipRequests[ip]) {
       this.ipRequests[ip] = { count: 0, lastRequest: 0, cooldown: 5000 };
@@ -20,7 +19,6 @@ const requestTracker = {
     tracker.count++;
     tracker.lastRequest = Date.now();
     
-    // Increase cooldown for frequent users (exponential backoff)
     if (tracker.count > 5) {
       tracker.cooldown = Math.min(30000, tracker.cooldown * 1.5); // Max 30 seconds
     }
@@ -67,10 +65,9 @@ app.get('/', (req, res) => {
 
 app.post('/api/download', async (req, res) => {
   try {
-    // Get client IP (using x-forwarded-for if behind proxy, falling back to req.ip)
+   
     const clientIp = req.headers['x-forwarded-for'] || req.ip;
-    
-    // Check if request is allowed or in cooldown
+
     if (!requestTracker.canMakeRequest(clientIp)) {
       const cooldownMs = requestTracker.getRemainingCooldown(clientIp);
       const cooldownSec = Math.ceil(cooldownMs / 1000);
@@ -80,7 +77,6 @@ app.post('/api/download', async (req, res) => {
       });
     }
     
-    // Update request tracking
     requestTracker.updateIpCooldown(clientIp);
     requestTracker.globalLastRequest = Date.now();
     
@@ -116,7 +112,7 @@ app.post('/api/download', async (req, res) => {
     
     const response = await axios.post(apiUrl, body, { 
       headers,
-      timeout: 30000 // Increased timeout to 30 seconds
+      timeout: 30000 
     });
 
     return res.json(response.data);
