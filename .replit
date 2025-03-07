@@ -17,10 +17,18 @@ deploymentTarget = "cloudrun"
 ignorePorts = false
 
 [workflows]
-runButton = "Run"
+runButton = "Start Server"
 
 [[workflows.workflow]]
 name = "Run"
+author = 40117342
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node index.js"
+
+[[workflows.workflow]]
+name = "Start Server"
 author = 40117342
 
 [[workflows.workflow.tasks]]
