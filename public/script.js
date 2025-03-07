@@ -275,36 +275,30 @@ document.addEventListener('DOMContentLoaded', function() {
             downloadResults.classList.remove('hidden');
             downloadOptions.innerHTML = '';
             
-            // Start auto download with best quality option
-            if (data.medias.length > 0) {
-                const bestQuality = data.medias[0]; // Assuming first option is best quality
-                autoDownload(bestQuality.url);
-            }
+            // Create background overlay for pop-up effect
+            document.body.classList.add('results-active');
             
             // Display all download options
             data.medias.forEach((media, index) => {
                 const option = document.createElement('div');
                 option.className = 'download-option';
+                option.style.setProperty('--i', index); // Set animation delay based on index
                 
                 const quality = media.quality || 'Unknown quality';
                 const format = media.format || 'Unknown format';
                 const size = media.formattedSize || 'Unknown size';
                 
                 option.innerHTML = `
-                    <h4>Option ${index + 1}${index === 0 ? ' (Auto-downloading...)' : ''}</h4>
+                    <h4>Option ${index + 1}</h4>
                     <p><strong>Quality:</strong> ${quality}</p>
                     <p><strong>Format:</strong> ${format}</p>
                     <p><strong>Size:</strong> ${size}</p>
-                    <a href="${media.url}" class="download-link" target="_blank" download>Download</a>
                 `;
                 
-                // Add click event to each download option
-                option.addEventListener('click', function(e) {
-                    // Don't trigger if the actual download link was clicked
-                    if (!e.target.classList.contains('download-link')) {
-                        const downloadLink = this.querySelector('.download-link');
-                        autoDownload(downloadLink.href);
-                    }
+                // Add click event to each download option to auto-download
+                option.addEventListener('click', function() {
+                    autoDownload(media.url);
+                    showNotification(`Downloading ${quality} ${format} file...`, 'success');
                 });
                 
                 downloadOptions.appendChild(option);
