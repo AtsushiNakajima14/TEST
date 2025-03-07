@@ -213,27 +213,72 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
 
-    // Auto download function
+    // Auto download function - downloads directly without redirecting
     function autoDownload(url) {
-        // Create a temporary link element
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', '');
-        link.setAttribute('target', '_blank');
+        showNotification('Starting download...', 'info');
         
-        // Append link to body
-        document.body.appendChild(link);
-        
-        // Trigger click
-        setTimeout(() => {
-            link.click();
-            
-            // Clean up
-            document.body.removeChild(link);
-            
-            // Show success notification
-            showNotification('Download started automatically!', 'success');
-        }, 1000);
+        // Use fetch to get the file and download it directly
+        fetch(url)
+            .then(response => {
+                // Get filename from content-disposition header or use a default
+                let filename = 'video';
+                const disposition = response.headers.get('content-disposition');
+                if (disposition && disposition.includes('filename=')) {
+                    const filenameMatch = disposition.match(/filename=["']?([^"']+)["']?/);
+                    if (filenameMatch && filenameMatch[1]) {
+                        filename = filenameMatch[1];
+                    }
+                } else {
+                    // Try to extract filename from URL
+                    const urlParts = url.split('/');
+                    if (urlParts.length > 0) {
+                        const possibleFilename = urlParts[urlParts.length - 1].split('?')[0];
+                        if (possibleFilename && possibleFilename.includes('.')) {
+                            filename = possibleFilename;
+                        } else {
+                            filename = 'video_download.' + (url.includes('.mp4') ? 'mp4' : 'mp3');
+                        }
+                    }
+                }
+                
+                return response.blob().then(blob => {
+                    // Create object URL for the blob
+                    const blobUrl = URL.createObjectURL(blob);
+                    
+                    // Create download link and trigger it
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = filename;
+                    
+                    // Append to body, click, and clean up
+                    document.body.appendChild(link);
+                    link.click();
+                    
+                    // Clean up
+                    setTimeout(() => {
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(blobUrl); // Free up memory
+                    }, 100);
+                    
+                    showNotification('Download started!', 'success');
+                });
+            })
+            .catch(error => {
+                console.error('Download error:', error);
+                showNotification('Download failed. Trying alternate method...', 'error');
+                
+                // Fallback method - create a hidden iframe
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = url;
+                
+                document.body.appendChild(iframe);
+                
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                    showNotification('Alternate download method initiated', 'info');
+                }, 2000);
+            });
     }
 
     downloadBtn.addEventListener('click', async () => {
