@@ -337,9 +337,41 @@ document.addEventListener('DOMContentLoaded', function() {
             
         } catch (error) {
             console.error('Error:', error);
-            const errorMsg = error.message && error.message.includes('timeout') 
-                ? 'Request timed out. The service might be busy. Please try again later.' 
-                : 'Failed to process your request. Please try again later.';
+            let errorMsg = 'Failed to process your request. Please try again later.';
+            
+            // Check if it's a cooldown error
+            if (error.response && error.response.status === 429) {
+                const data = error.response.data;
+                errorMsg = data.error || 'Rate limit exceeded. Please wait before trying again.';
+                
+                // If we have cooldown information, create a countdown timer
+                if (data.cooldownMs) {
+                    const cooldownSec = Math.ceil(data.cooldownMs / 1000);
+                    let remainingTime = cooldownSec;
+                    
+                    errorMsg = `Rate limit exceeded. Please wait ${remainingTime} seconds before trying again.`;
+                    showError(errorMsg);
+                    showNotification(errorMsg, 'error');
+                    
+                    // Start a countdown timer
+                    const countdownInterval = setInterval(() => {
+                        remainingTime--;
+                        if (remainingTime <= 0) {
+                            clearInterval(countdownInterval);
+                            showError('You can try again now.');
+                            showNotification('Cooldown period ended. You can try again now.', 'info');
+                        } else {
+                            errorMsg = `Rate limit exceeded. Please wait ${remainingTime} seconds before trying again.`;
+                            errorText.textContent = errorMsg;
+                        }
+                    }, 1000);
+                    
+                    return;
+                }
+            } else if (error.message && error.message.includes('timeout')) {
+                errorMsg = 'Request timed out. The service might be busy. Please try again later.';
+            }
+            
             showError(errorMsg);
             showNotification(errorMsg, 'error');
         }

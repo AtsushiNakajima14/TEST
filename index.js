@@ -4,6 +4,45 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Rate limiting and cooldown tracking
+const requestTracker = {
+  ipRequests: {},
+  globalLastRequest: 0,
+  GLOBAL_COOLDOWN: 3000, // 3 seconds cooldown between any requests
+  getIpCooldown: function(ip) {
+    if (!this.ipRequests[ip]) {
+      this.ipRequests[ip] = { count: 0, lastRequest: 0, cooldown: 5000 };
+    }
+    return this.ipRequests[ip];
+  },
+  updateIpCooldown: function(ip) {
+    const tracker = this.getIpCooldown(ip);
+    tracker.count++;
+    tracker.lastRequest = Date.now();
+    
+    // Increase cooldown for frequent users (exponential backoff)
+    if (tracker.count > 5) {
+      tracker.cooldown = Math.min(30000, tracker.cooldown * 1.5); // Max 30 seconds
+    }
+  },
+  canMakeRequest: function(ip) {
+    const now = Date.now();
+    const tracker = this.getIpCooldown(ip);
+    const ipReady = (now - tracker.lastRequest) > tracker.cooldown;
+    const globalReady = (now - this.globalLastRequest) > this.GLOBAL_COOLDOWN;
+    
+    return ipReady && globalReady;
+  },
+  getRemainingCooldown: function(ip) {
+    const now = Date.now();
+    const tracker = this.getIpCooldown(ip);
+    const ipRemaining = Math.max(0, tracker.cooldown - (now - tracker.lastRequest));
+    const globalRemaining = Math.max(0, this.GLOBAL_COOLDOWN - (now - this.globalLastRequest));
+    
+    return Math.max(ipRemaining, globalRemaining);
+  }
+};
+
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(express.static('public', {
@@ -28,6 +67,23 @@ app.get('/', (req, res) => {
 
 app.post('/api/download', async (req, res) => {
   try {
+    // Get client IP (using x-forwarded-for if behind proxy, falling back to req.ip)
+    const clientIp = req.headers['x-forwarded-for'] || req.ip;
+    
+    // Check if request is allowed or in cooldown
+    if (!requestTracker.canMakeRequest(clientIp)) {
+      const cooldownMs = requestTracker.getRemainingCooldown(clientIp);
+      const cooldownSec = Math.ceil(cooldownMs / 1000);
+      return res.status(429).json({ 
+        error: `Please wait ${cooldownSec} seconds before making another request`,
+        cooldownMs: cooldownMs
+      });
+    }
+    
+    // Update request tracking
+    requestTracker.updateIpCooldown(clientIp);
+    requestTracker.globalLastRequest = Date.now();
+    
     const { url } = req.body;
 
     if (!url) {
