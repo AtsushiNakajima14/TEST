@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Video Downloader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="particles-container" id="particles-js"></div>
+    
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-download"></i>
+                <h1>Ultimate Video Downloader</h1>
+            </div>
+            <ul>
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-to">How to Use</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="container">
+                <h1 class="title">Download Videos from Any Platform</h1>
+                <p class="subtitle">Facebook, Instagram, Twitter, TikTok, YouTube, and many more!</p>
+                
+                <div class="download-form">
+                    <input type="text" id="videoUrl" placeholder="Paste your video URL here..." required>
+                    <button id="downloadBtn">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+                
+                <div id="result" class="result-container hidden">
+                    <div class="loading-animation hidden">
+                        <div class="loader"></div>
+                        <p>Processing your request...</p>
+                    </div>
+                    <div class="download-results hidden">
+                        <h3>Download Options</h3>
+                        <div id="downloadOptions" class="options-container"></div>
+                    </div>
+                    <div class="error-message hidden">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p id="errorText"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card" data-aos="fade-up">
+                        <i class="fas fa-globe"></i>
+                        <h3>Multiple Platforms</h3>
+                        <p>Download videos from Facebook, Instagram, Twitter, TikTok, YouTube, and more!</p>
+                    </div>
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Fast Processing</h3>
+                        <p>Get your videos in seconds with our high-speed processing technology.</p>
+                    </div>
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                        <i class="fas fa-video"></i>
+                        <h3>HD Quality</h3>
+                        <p>Download videos in the highest quality available from the source.</p>
+                    </div>
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                        <i class="fas fa-lock"></i>
+                        <h3>Secure</h3>
+                        <p>We don't store your videos or personal information. Your privacy is our priority.</p>
+                    </div>
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Mobile Friendly</h3>
+                        <p>Our website works perfectly on all devices, including smartphones and tablets.</p>
+                    </div>
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                        <i class="fas fa-infinity"></i>
+                        <h3>Unlimited Downloads</h3>
+                        <p>Download as many videos as you want without any limitations.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-to" class="how-to">
+            <div class="container">
+                <h2 class="section-title">How to Use</h2>
+                <div class="steps">
+                    <div class="step" data-aos="fade-right">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Copy the URL</h3>
+                            <p>Find the video you want to download and copy its URL from the address bar or share button.</p>
+                        </div>
+                    </div>
+                    <div class="step" data-aos="fade-right" data-aos-delay="100">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Paste the URL</h3>
+                            <p>Paste the URL in the input field on our website.</p>
+                        </div>
+                    </div>
+                    <div class="step" data-aos="fade-right" data-aos-delay="200">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Download</h3>
+                            <p>Click the download button and select your preferred quality option.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="container">
+                <h2 class="section-title">About Us</h2>
+                <p class="about-text">
+                    Ultimate Video Downloader is a free online service that allows you to download videos from various social media platforms.
+                    Our mission is to provide a simple, fast, and secure way to save your favorite videos for offline viewing.
+                </p>
+                <p class="about-text">
+                    We are constantly improving our service to ensure the best experience for our users.
+                    If you have any questions or suggestions, feel free to contact us.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-download"></i>
+                    <h2>Ultimate Video Downloader</h2>
+                </div>
+                <p>© 2023 Ultimate Video Downloader. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
