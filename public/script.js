@@ -309,7 +309,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             document.body.classList.add('results-active');
 
-            // Display title and platform if available
             if (data.title || data.platform) {
                 const infoHeader = document.createElement('div');
                 infoHeader.className = 'download-info-header';
@@ -337,23 +336,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 downloadResults.insertBefore(infoHeader, downloadOptions);
             }
 
-            // Sort media options by quality (if available) or size
             const sortedMedia = [...data.medias].sort((a, b) => {
-                // Sort HD above SD, and higher numbers above lower
+             
                 const qualityA = a.quality || '';
                 const qualityB = b.quality || '';
 
-                // Check for HD/SD designations
                 if (qualityA.includes('HD') && !qualityB.includes('HD')) return -1;
                 if (!qualityA.includes('HD') && qualityB.includes('HD')) return 1;
 
-                // Extract numbers for numeric comparison
                 const numA = parseInt(qualityA.match(/\d+/)?.[0] || '0');
                 const numB = parseInt(qualityB.match(/\d+/)?.[0] || '0');
 
-                if (numA !== numB) return numB - numA; // Higher numbers first
-
-                // If qualities are equal or not parseable, sort by format (mp4 first)
+                if (numA !== numB) return numB - numA; 
                 if (a.format === 'mp4' && b.format !== 'mp4') return -1;
                 if (a.format !== 'mp4' && b.format === 'mp4') return 1;
 
@@ -376,7 +370,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p><strong>Size:</strong> ${size}</p>
                 `;
 
-                // Add additional info for special cases
                 if (media.watermark === false) {
                     optionContent += `<p class="special-feature"><i class="fas fa-check-circle"></i> No Watermark</p>`;
                 }
@@ -393,11 +386,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 option.addEventListener('click', function() {
                     if (media.thirdPartyDownload) {
-                        // Open third-party service in new tab
+                       
                         window.open(media.url, '_blank');
                         showNotification(`Redirecting to download service...`, 'info');
                     } else {
-                        // Direct download
+                      
                         autoDownload(media.url);
                         showNotification(`Downloading ${quality} ${format} file...`, 'success');
                     }
@@ -406,7 +399,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 downloadOptions.appendChild(option);
             });
 
-            // Add a "Copy All Options" button if there are multiple media options
             if (sortedMedia.length > 1) {
                 const actionButtons = document.createElement('div');
                 actionButtons.className = 'action-buttons';
