@@ -339,12 +339,10 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
             let errorMsg = 'Failed to process your request. Please try again later.';
             
-            // Check if it's a cooldown error
             if (error.response && error.response.status === 429) {
                 const data = error.response.data;
                 errorMsg = data.error || 'Rate limit exceeded. Please wait before trying again.';
                 
-                // If we have cooldown information, create a countdown timer
                 if (data.cooldownMs) {
                     const cooldownSec = Math.ceil(data.cooldownMs / 1000);
                     let remainingTime = cooldownSec;
@@ -353,7 +351,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     showError(errorMsg);
                     showNotification(errorMsg, 'error');
                     
-                    // Start a countdown timer
                     const countdownInterval = setInterval(() => {
                         remainingTime--;
                         if (remainingTime <= 0) {
